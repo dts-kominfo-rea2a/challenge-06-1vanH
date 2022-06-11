@@ -18,7 +18,58 @@ let modifyFile3 = (val) => {
 
 // TODO: Kerjakan bacaData
 // gunakan variabel file1, file2, dan file3
-const bacaData = null;
+let array = [];
+let err = null;
+const bacaData = (fnCallback) => {
+  let fileArray = [];
+  fileArray.push (file1);
+  fileArray.push (file2);
+  fileArray.push (file3);
+  readJsonFile(fileArray, array);
+  setTimeout(() => {
+    return fnCallback(err, array);
+  }, 10);
+};
+
+//Read Json File
+const readJsonFile = (jsonFile, array) => {
+  //Loop array of file
+  for (let i = 0; i < jsonFile.length; i++) {
+    //readFile
+    FileSystem.readFile(jsonFile[i], { encoding: "utf8" }, (error, data) => {
+      if (error) {
+        err = error;
+        return err;
+      } else {
+        let res = JSON.parse(data);
+        let dat = findMessage(res);
+        let datArray = dat.split(" ");
+        datArray = datArray[1];
+        array[i] = datArray;
+
+        return datArray;
+      }
+    });
+  }
+};
+
+//find key message
+const findMessage = (data, keys) => {
+  let dat = data;
+  let key = Object.keys(dat);
+  if (key === undefined || key[0] === "message") {
+    return dat.message;
+  } else {
+    key = key[0];
+    dat = dat[0];
+    if (dat === undefined) {
+      dat = data;
+      return findMessage(dat.data);
+    } else {
+      return findMessage(dat, key[0]);
+    }
+  }
+};
 
 // ! JANGAN DIMODIFIKASI
 module.exports = {
